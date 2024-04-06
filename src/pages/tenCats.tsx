@@ -23,12 +23,16 @@ const changeCat = async (): Promise<SerchCatImage> => {
   const result = await res.json();
   return result[0];
 }
-
-export default function Home(getServerSideProps: IndexPageProps) {
-  const [catImage, setImage] = useState(getServerSideProps.initialCatImageUrl)
+const tenCats = async () => {
+  const res = await fetch("https://api.thecatapi.com/v1/images/search?limit=10");
+  const result = await res.json();
+  return result;
+}
+export default function Home(props: IndexPageProps) {
+  const [catImage, setImage] = useState<string[]>([props.initialCatImageUrl])
   const handlrClick = async () => {
-    const catImage = await changeCat();
-    setImage(catImage.url)
+    const catImages = await tenCats();
+    setImage(catImages.map((catImage: { url: string; }) => catImage.url));
   }
   return (
     <div style={{
@@ -39,10 +43,13 @@ export default function Home(getServerSideProps: IndexPageProps) {
       height: "100vh"
     }}>
       <h1>猫の画像アプリ</h1>
-      <img
-        src={catImage}
-        width={500}
-        height="auto" />
+      {catImage.map((url, index) => (
+        <img
+          key={index}
+          src={url}
+          style={{ marginBottom: '10px' }}
+          alt={`Cat number ${index + 1}`} />
+      ))}
       <button onClick={handlrClick}>今日の猫さん</button>
     </div>
   );

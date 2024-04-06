@@ -6,14 +6,24 @@ import { Footer } from "./Footer";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export function Main() {
+type MainProps = {
+  components: string;
+  number?: Number;
+}
+
+const Main: React.FC<MainProps> = (props) => {
+  const { components, number } = props;
+  console.log(number)
   return (
     <main
       className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}
     >
-      <Title />
+      <Title components={components} />
       <Logo />
       <Footer />
     </main>
   );
+
 }
+
+export default Main;
